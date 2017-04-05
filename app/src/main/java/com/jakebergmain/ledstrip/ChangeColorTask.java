@@ -1,48 +1,46 @@
 package com.jakebergmain.ledstrip;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.net.ConnectException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 /**
  * Created by jake on 2/7/16.
  */
-public class ChangeColorTask extends AsyncTask<Integer, Void, Integer> {
+public class ChangeColorTask extends AsyncTask<Integer, Integer, Integer> {
 
-    final static int SUCCESS = 0;
-    final static int FAILURE = 1;
+    private final static int SUCCESS = 0;
+    private final static int FAILURE = 1;
 
-    final int PORT = 2390;
-    final int RESPONSE_PORT = 55056;
+    private final String LOG_TAG = ChangeColorTask.class.getSimpleName();
 
-    final String LOG_TAG = ChangeColorTask.class.getSimpleName();
+    private Context mContext;
 
-    Context mContext;
-
-    public ChangeColorTask(Context context){
+    ChangeColorTask(Context context) {
         mContext = context;
     }
 
     public void onPostExecute(Integer result) {
-        if (result == SUCCESS){
+        if (result == SUCCESS) {
             Log.v(LOG_TAG, "success");
         } else {
             Log.e(LOG_TAG, "error");
         }
     }
 
-    public Integer doInBackground(Integer... params){
-        int red = params[0];
-        int green = params[1];
-        int blue = params[2];
+    public Integer doInBackground(Integer... params) {
+        int red = (0xFF0000 & params[0]) >> 16;
+        int green = (0x00FF00 & params[0]) >> 8;
+        int blue = (0x0000FF & params[0]);
+
+//        int red = params[0];
+//        int green = params[1];
+//        int blue = params[2];
 
         // scale colors from max 255 to max 1023
         red = (int) ((red / 255.0) * 1023);
@@ -61,15 +59,17 @@ public class ChangeColorTask extends AsyncTask<Integer, Void, Integer> {
             ipAddrString = ipAddrString.substring(1);
             address = InetAddress.getByName(ipAddrString);
         } catch (Exception e) {
-            Log.w(LOG_TAG, "No valid IP in SharedPreferences");
-            e.printStackTrace();
-            return null;
+            Log.e(LOG_TAG, "No valid IP in SharedPreferences");
+//            e.printStackTrace();
+            return FAILURE;
         }
 
         // packet as a string
         String packetContents = red + ":" + green + ":" + blue;
 
         try {
+            int RESPONSE_PORT = 55056;
+            int PORT = 2390;
             // open a socket
             socket = new DatagramSocket(RESPONSE_PORT);
             // packet contents
@@ -96,7 +96,7 @@ public class ChangeColorTask extends AsyncTask<Integer, Void, Integer> {
                 return FAILURE;
             }
 
-            if(text.equals("acknowledged")) {
+            if (text.equals("acknowledged")) {
                 return SUCCESS;
             }
 
@@ -106,7 +106,7 @@ public class ChangeColorTask extends AsyncTask<Integer, Void, Integer> {
 
             return FAILURE;
         } finally {
-            if(socket != null) {
+            if (socket != null) {
                 socket.close();
             }
         }

@@ -1,10 +1,11 @@
 package com.jakebergmain.ledstrip;
 
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements
+        LedFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
