@@ -5,14 +5,13 @@ The custom made WiFi LED controller uses the ESP8266 and some MOSFETs.
 
 
 ## Screenshots ##
-![Screenshot](http://jakebergamin.com/images/android_led_screenshot1.png)
-![Screenshot](http://jakebergamin.com/images/android_led_screenshot2.png)
+![Screenshot](http://imgh.us/device-2017-04-05-105021_1.png)
 
 ## Setup - Android Studio ##
 
 Clone this project (with a command line):
 - Navigate to folder you want project in.
-- `git clone https://github.com/jbergamin/Android-LED-Strip.git`
+- `git clone https://github.com/ferdavs/Android-LED-Strip.git`
 
 Import into Android Studio:
 - Go to `import project`
